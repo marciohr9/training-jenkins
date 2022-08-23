@@ -3,3 +3,4 @@
 #  https://wiki.jenkins-ci.org/display/JENKINS/Administering+Jenkins
 
 .vagrant/
+*.log
