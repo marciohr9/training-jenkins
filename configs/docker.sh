@@ -3,10 +3,22 @@
 # facilitando o uso do docker pelo jenkins em máquinas slaves, mesmo que ele como mestre tenha instalado
 
 mkdir -p /etc/systemd/system/docker.service.d/
-nano /etc/systemd/system/docker.service.d/override.conf
+touch /etc/systemd/system/docker.service.d/override.conf
+touch /etc/docker/daemon.json
 
-cat > file << 'EOF'
+cat > /etc/docker/daemon.json << 'EOF'
+{ 
+"storage-driver": "overlay2",
+"registry-mirrors": ["https://"],
+"hosts": ["unix://", "tcp://0.0.0.0:2376"]
+}
+EOF
+
+cat > /etc/systemd/system/docker.service.d/override.conf << 'EOF'
 [Service]
 ExecStart=
-ExecStart=/usr/bin/dockerd -H -fd:// -H tcp://0.0.0.0:2376
+ExecStart=/usr/bin/dockerd
 EOF
+
+systemctl daemon-reload
+systemctl restart docker.service
